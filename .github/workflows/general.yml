@@ -42,6 +42,10 @@ jobs:
       - name: Install dependencies
         run: npm i
 
+      - name: Run ESLint
+        run: npm run lint:exec
+        continue-on-error: false
+
       - name: Build Dev
         run: npm run dev:build
         continue-on-error: true

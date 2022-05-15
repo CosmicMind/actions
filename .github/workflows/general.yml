@@ -1,0 +1,17 @@
+name: Build and Tests
+
+on:
+  workflow_call:
+    inputs:
+      reponame:
+        required: true
+        type: string
+
+jobs:
+  run-tests:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/workflows/run-tests
+        with:
+          reponame: ${{ inputs.reponame }}

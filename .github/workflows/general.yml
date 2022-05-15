@@ -12,6 +12,6 @@ jobs:
     name: Run Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/workflows/run-tests
+      - uses: ./.github/workflows/run-tests.yml
         with:
           reponame: ${{ inputs.reponame }}

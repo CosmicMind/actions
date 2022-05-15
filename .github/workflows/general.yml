@@ -12,6 +12,6 @@ jobs:
     name: Run Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/workflows/run-tests.yml
+      - uses: cosmicverse/workflows/.github/workflows/run-tests.yml@main
         with:
           reponame: ${{ inputs.reponame }}

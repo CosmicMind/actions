@@ -1,6 +1,11 @@
 name: Build and Tests
 
-on: [push]
+on:
+  workflow_call:
+    inputs:
+      reponame:
+        required: true
+        type: string
 
 jobs:
   run-tests:

@@ -1,10 +1,10 @@
-name: Build Dev
+name: Build
 
 on:
   workflow_call:
 
 jobs:
-  build-dev:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout actions

@@ -1,11 +1,10 @@
-name: Lint, Build, and Test
+name: Test
 
 on:
   workflow_call:
 
 jobs:
-  lint-build-test:
-    name: build
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout actions
@@ -25,21 +24,12 @@ jobs:
           path: ~/.npm
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
 
-      - if: ${{ steps.cache-npm.outputs.cache-hit == false }}
+      - if: ${{ false == steps.cache-npm.outputs.cache-hit }}
         name: List the state of node modules
-        continue-on-error: true
         run: npm list
 
       - name: Install dependencies
         run: npm i
-
-      - name: Run ESLint
-        run: npm run lint:exec
-        continue-on-error: false
-
-      - name: Build Dev
-        run: npm run dev:build
-        continue-on-error: true
 
       - name: Build Tests
         run: npm run tests:build
@@ -47,4 +37,3 @@ jobs:
 
       - name: Run Tests
         run: npm run tests:exec
-        continue-on-error: true

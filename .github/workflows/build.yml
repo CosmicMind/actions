@@ -33,3 +33,4 @@ jobs:
 
       - name: Build Dev
         run: npm run dev:build
+        continue-on-error: true

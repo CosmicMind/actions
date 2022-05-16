@@ -33,3 +33,4 @@ jobs:
 
       - name: Run Linter
         run: npm run lint:exec
+        continue-on-error: true

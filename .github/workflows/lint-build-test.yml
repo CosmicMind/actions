@@ -4,7 +4,7 @@ on:
   workflow_call:
 
 jobs:
-  build:
+  lint-build-test:
     name: build
     runs-on: ubuntu-latest
     steps:

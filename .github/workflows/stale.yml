@@ -2,10 +2,6 @@ name: Mark stale issues and pull requests
 
 on:
   workflow_call:
-    inputs:
-      reponame:
-        required: true
-        type: string
 
 jobs:
   stale:

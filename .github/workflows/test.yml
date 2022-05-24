@@ -29,7 +29,7 @@ jobs:
         run: npm list
 
       - name: Install dependencies
-        run: npm ci
+        run: npm i
 
       - name: Build Tests
         run: npm run tests:build

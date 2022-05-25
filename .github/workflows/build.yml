@@ -26,6 +26,7 @@ jobs:
 
       - if: ${{ false == steps.cache-npm.outputs.cache-hit }}
         name: List the state of node modules
+        continue-on-error: true
         run: npm list
 
       - name: Install dependencies

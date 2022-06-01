@@ -10,10 +10,10 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-    - uses: actions/stale@v5
-      with:
-        stale-issue-message: 'This issue has been marked stale.'
-        stale-pr-message: 'This pull request has been marked stale.'
-        stale-issue-label: 'This issue has been labeled stale.'
-        stale-pr-label: 'This pull request has been labeled stale.'
+      - uses: actions/stale@v5
+        with:
+          stale-issue-message: 'This issue has been marked stale.'
+          stale-pr-message: 'This pull request has been marked stale.'
+          stale-issue-label: 'This issue has been labeled stale.'
+          stale-pr-label: 'This pull request has been labeled stale.'
       

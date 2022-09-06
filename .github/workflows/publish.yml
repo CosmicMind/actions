@@ -12,6 +12,12 @@ jobs:
       - uses: ./.github/workflows/lint
       - uses: ./.github/workflows/prod-build
       - uses: ./.github/workflows/test
+        with:
+          node-version: 16
+          registry-url: https://registry.npmjs.org
+      - run: npm i
+      - run: npm run package:build
+        continue-on-error: false
       - run: npm run package:publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
@@ -29,7 +35,11 @@ jobs:
       - uses: ./.github/workflows/prod-build
       - uses: ./.github/workflows/test
         with:
-          registry-url: https://npm.pkg.github.com/
+          node-version: 16
+          registry-url: https://npm.pkg.github.com
+      - run: npm i
+      - run: npm run package:build
+        continue-on-error: false
       - run: npm run package:publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GPR_TOKEN}}

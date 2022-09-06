@@ -1,4 +1,4 @@
-name: Build
+name: Development Build
 
 on:
   workflow_call:
@@ -13,7 +13,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
 
       - name: Cache node modules
         id: cache-npm
@@ -22,7 +22,7 @@ jobs:
           cache-name: cache-node-modules
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-dev-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
 
       - if: ${{ false == steps.cache-npm.outputs.cache-hit }}
         name: List the state of node modules

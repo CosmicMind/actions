@@ -1,9 +1,8 @@
-name: Publish
+name: Publish Package
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   publish-npm:
@@ -11,15 +10,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-      - uses: ./.github/workflows/run-lint
-      - uses: ./.github/workflows/build-dev
-      - uses: ./.github/workflows/run-tests
-        with:
-          node-version: 16
-          registry-url: https://registry.npmjs.org/
-      - run: npm i
-      - run: npm run package:build
-        continue-on-error: false
+      - uses: ./.github/workflows/lint
+      - uses: ./.github/workflows/prod-build
+      - uses: ./.github/workflows/test
       - run: npm run package:publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
@@ -33,15 +26,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-      - uses: ./.github/workflows/run-lint
-      - uses: ./.github/workflows/build-dev
-      - uses: ./.github/workflows/run-tests
+      - uses: ./.github/workflows/lint
+      - uses: ./.github/workflows/prod-build
+      - uses: ./.github/workflows/test
         with:
-          node-version: 16
           registry-url: https://npm.pkg.github.com/
-      - run: npm i
-      - run: npm run package:build
-        continue-on-error: false
       - run: npm run package:publish
         env:
-          NODE_AUTH_TOKEN: ${{secrets.GH_TOKEN}}
+          NODE_AUTH_TOKEN: ${{secrets.GPR_TOKEN}}

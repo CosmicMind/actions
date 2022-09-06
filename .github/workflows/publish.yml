@@ -9,11 +9,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-      - uses: ./.github/workflows/lint
-      - uses: ./.github/workflows/prod-build
-      - uses: ./.github/workflows/test
         with:
-          node-version: 16
+          node-version: 18
           registry-url: https://registry.npmjs.org
       - run: npm i
       - run: npm run package:build
@@ -31,11 +28,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-      - uses: ./.github/workflows/lint
-      - uses: ./.github/workflows/prod-build
-      - uses: ./.github/workflows/test
         with:
-          node-version: 16
+          node-version: 18
           registry-url: https://npm.pkg.github.com
       - run: npm i
       - run: npm run package:build

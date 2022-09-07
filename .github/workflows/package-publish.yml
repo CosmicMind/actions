@@ -14,6 +14,6 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
       - run: npm ci
       - run: npm run package:build
-      - run: npm package:publish
+      - run: npm run package:publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GPR_TOKEN }}

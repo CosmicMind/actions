@@ -39,7 +39,8 @@ jobs:
 
       - name: NPM Publish
         uses: actions/setup-node@v3
-        run: npm run package:publish
+
+      - run: npm run package:publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -47,6 +48,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           registry-url: 'https://npm.pkg.github.com'
-        run: npm run package:publish
+
+      - run: npm run package:publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,103 +1,58 @@
-name: Release package
-
+name: Package Publish
 
 on:
   workflow_call:
 
 jobs:
-  release:
+  publish:
+    name: Package Publish
     runs-on: ubuntu-latest
     steps:
-      # Checkout project repository
-      - name: Checkout
+      - name: Checkout Actions
         uses: actions/checkout@master
 
-      # Setup Node.js environment
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@master
         with:
-          registry-url: https://registry.npmjs.org/
           node-version: 18.x
 
-      # Install dependencies (required by Run tests step)
-      #- name: Install dependencies
-      #  run: yarn install
-
-      # Tests
-      #- name: Run tests
-      #  run: yarn test
-
-      # Configure Git
-      - name: Git configuration
-        run: |
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "GitHub Actions"
-
-      # Bump package version
-      # Use tag latest
-      - name: Bump release version
-        if: startsWith(github.event.inputs.release-type, 'pre') != true
-        run: |
-          echo "NEW_VERSION=$(npm --no-git-tag-version version $RELEASE_TYPE)" >> $GITHUB_ENV
-          echo "RELEASE_TAG=latest" >> $GITHUB_ENV
+      - name: Cache Node Modules
+        id: cache-npm
+        uses: actions/cache@master
         env:
-          RELEASE_TYPE: ${{ github.event.inputs.release-type }}
-
-      # Bump package pre-release version
-      # Use tag beta for pre-release versions
-      - name: Bump pre-release version
-        if: startsWith(github.event.inputs.release-type, 'pre')
-        run: |
-          echo "NEW_VERSION=$(npm --no-git-tag-version --preid=beta version $RELEASE_TYPE
-          echo "RELEASE_TAG=beta" >> $GITHUB_ENV
-        env:
-          RELEASE_TYPE: ${{ github.event.inputs.release-type }}
-
-      # Update changelog unreleased section with new version
-      - name: Update changelog
-        uses: superfaceai/release-changelog-action@v1
+          cache-name: cache-node-modules
         with:
-          path-to-changelog: CHANGELOG.md
-          version: ${{ env.NEW_VERSION }}
-          operation: release
+          path: ~/.npm
+          key: ${{ runner.os }}-release-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
 
-      # Commit changes
-      - name: Commit CHANGELOG.md and package.json changes and create tag
-        run: |
-          git add "package.json"
-          git add "CHANGELOG.md"
-          git commit -m "chore: release ${{ env.NEW_VERSION }}"
-          git tag ${{ env.NEW_VERSION }}
+      - if: ${{ false == steps.cache-npm.outputs.cache-hit }}
+        name: List Node Modules State
+        continue-on-error: true
+        run: npm list
 
-      # Publish version to public repository
-      - run: npm run package:build
-      - name: Publish
-        run: npm publish --verbose --access public --tag ${{ env.RELEASE_TAG }}
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Release
+        run: npm run package:build
+        continue-on-error: false
+
+      - name: NPM Publish
+        uses: actions/setup-node@master
+        with:
+          always-auth: true
+          node-version: 18.x
+          registry-url: https://registry.npmjs.org
+
+      - run: npm run package:publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      # Push repository changes
-      - name: Push changes to repository
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git push origin && git push --tags
-
-      # Read version changelog
-      - id: get-changelog
-        name: Get version changelog
-        uses: superfaceai/release-changelog-action@v1
+      - name: GPR Publish
+        uses: actions/setup-node@master
         with:
-          path-to-changelog: CHANGELOG.md
-          version: ${{ env.NEW_VERSION }}
-          operation: read
+          registry-url: https://npm.pkg.github.com
 
-      # Update GitHub release with changelog
-      - name: Update GitHub release documentation
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ env.NEW_VERSION }}
-          body: ${{ steps.get-changelog.outputs.changelog }}
-          prerelease: ${{ startsWith(github.event.inputs.release-type, 'pre') }}
+      - run: npm run package:publish
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

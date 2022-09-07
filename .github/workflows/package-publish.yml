@@ -41,18 +41,21 @@ jobs:
         with:
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Publish Package
-        run: npm package:publish
+      - name: Build Release
+        run: npm run package:build
+        continue-on-error: false
+
+      - name: NPM Publish
+        with:
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm package:publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        continue-on-error: false
 
-      - name: GitHub Package Repository Publish
+      - name: GPR Publish
+        uses: actions/setup-node@v3
         with:
           registry-url: 'https://npm.pkg.github.com'
-
-      - name: Publish Package
-        run: npm run package:publish
+      - run: npm run package:publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: false

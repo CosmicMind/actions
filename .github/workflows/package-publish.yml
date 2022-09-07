@@ -3,7 +3,7 @@ name: Package Publish
 on:
   workflow_call:
     secrets:
-      NPM_TOKEN:
+      npm_token:
         required: true
 
 jobs:
@@ -49,7 +49,7 @@ jobs:
 
       - run: npm run package:publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
 
       - name: GPR Publish
         uses: actions/setup-node@master
@@ -58,4 +58,4 @@ jobs:
 
       - run: npm run package:publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.github_token }}

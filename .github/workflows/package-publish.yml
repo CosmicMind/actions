@@ -34,14 +34,6 @@ jobs:
         run: npm ci
 
       - name: Build Release
-        run: npm run release:build
-        continue-on-error: false
-
-      - name: NPM Publish
-        with:
-          registry-url: 'https://registry.npmjs.org'
-
-      - name: Build Release
         run: npm run package:build
         continue-on-error: false
 

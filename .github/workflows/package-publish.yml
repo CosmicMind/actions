@@ -16,4 +16,4 @@ jobs:
       - run: npm run package:build
       - run: npm run package:publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GPR_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

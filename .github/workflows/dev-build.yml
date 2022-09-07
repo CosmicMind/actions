@@ -36,3 +36,12 @@ jobs:
       - name: Build Dev
         run: npm run dev:build
         continue-on-error: false
+
+      - name: Checkout Release
+        run: git checkout release
+
+      - name: Merge Release
+        run: git merge dev
+
+      - name: Push Release
+        run: git push

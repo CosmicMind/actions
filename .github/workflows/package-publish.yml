@@ -4,54 +4,16 @@ on:
   workflow_call:
 
 jobs:
-  publish:
-    name: Package Publish
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Actions
-        uses: actions/checkout@master
-
-      - name: Setup Node
-        uses: actions/setup-node@master
-        with:
-          node-version: 18.x
-
-      - name: Cache Node Modules
-        id: cache-npm
-        uses: actions/cache@master
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-release-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-
-      - if: ${{ false == steps.cache-npm.outputs.cache-hit }}
-        name: List Node Modules State
-        continue-on-error: true
-        run: npm list
-
-      - name: Install Dependencies
-        run: npm i
-
-      - name: Build Release
-        run: npm run package:build
-        continue-on-error: false
-
-      - name: NPM Publish
-        uses: actions/setup-node@master
-        with:
-          always-auth: true
-          registry-url: https://registry.npmjs.org
-
-      - run: npm run package:publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: GPR Publish
-        uses: actions/setup-node@master
-        with:
-          registry-url: https://npm.pkg.github.com
-
-      - run: npm run package:publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  jobs:
+    publish:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@master
+        - uses: actions/setup-node@v1
+          with:
+            node-version: 18.x
+            registry-url: https://registry.npmjs.org/
+        - run: npm i
+        - run: npm publish
+          env:
+            NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

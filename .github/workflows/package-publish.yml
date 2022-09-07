@@ -41,7 +41,7 @@ jobs:
         uses: actions/setup-node@master
         with:
           always-auth: true
-          registry-url: //registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}
+          registry-url: https://registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}
 
       - run: npm run package:publish
         env:

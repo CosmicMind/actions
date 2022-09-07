@@ -41,7 +41,8 @@ jobs:
         uses: actions/setup-node@master
         with:
           always-auth: true
-          registry-url: https://registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}
+          scope: @cosmicmind
+          registry-url: https://registry.npmjs.org
 
       - run: npm run package:publish
         env:

@@ -1,4 +1,4 @@
-name: NPM Publish
+name: Package Publish
 
 on:
   workflow_call:
@@ -11,15 +11,9 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18.x
-          registry-url: https://registry.npmjs.org
+          registry-url: https://npm.pkg.github.com
       - run: npm ci
       - run: npm run package:build
-      - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - uses: actions/setup-node@v3
-        with:
-          registry-url: https://npm.pkg.github.com
-      - run: npm publish
+      - run: npm run package:publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GPR_TOKEN }}

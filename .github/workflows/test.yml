@@ -1,41 +1,42 @@
-name: Test
+name: Tests Build
 
 on:
   workflow_call:
 
 jobs:
-  test:
+  build:
+    name: Tests Build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout actions
+      - name: Checkout Actions
         uses: actions/checkout@v3
 
-      - name: Setup node
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
 
-      - name: Cache node modules
+      - name: Cache Node Modules
         id: cache-npm
         uses: actions/cache@v3
         env:
           cache-name: cache-node-modules
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-tests-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
 
       - if: ${{ false == steps.cache-npm.outputs.cache-hit }}
-        name: List the state of node modules
+        name: List Node Modules State
         continue-on-error: true
         run: npm list
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: npm i
 
       - name: Build Tests
         run: npm run tests:build
         continue-on-error: false
 
-      - name: Run Tests
+      - name: Execute Tests
         run: npm run tests:exec
         continue-on-error: false

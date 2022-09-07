@@ -10,18 +10,13 @@ jobs:
       contents: read
       packages: write
     steps:
-      - name: checkout actions
       - uses: actions/checkout@v3
-      - name: setup node
       - uses: actions/setup-node@v3
         with:
           node-version: 18.x
           registry-url: https://npm.pkg.github.com
-      - name: clean install
       - run: npm ci
-      - name: package build
       - run: npm run package:build
-      - name: package publish
       - run: npm run package:publish
         env:
           GITHUB_TOKEN: ${{ secrets.GPR_TOKEN }}

@@ -5,21 +5,54 @@ on:
 
 jobs:
   publish:
+    name: Package Publish
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Checkout Actions
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
         with:
-          node-version: '18.x'
+          node-version: 18.x
+
+      - name: Cache Node Modules
+        id: cache-npm
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-release-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+
+      - if: ${{ false == steps.cache-npm.outputs.cache-hit }}
+        name: List Node Modules State
+        continue-on-error: true
+        run: npm list
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Release
+        run: npm run release:build
+        continue-on-error: false
+
+      - name: NPM Publish
+        with:
           registry-url: 'https://registry.npmjs.org'
-      - run: npm ci
-      - run: npm package:build
-      - run: npm package:publish
+
+      - name: Publish Package
+        run: npm package:publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - uses: actions/setup-node@v3
+        continue-on-error: false
+
+      - name: GitHub Package Repository Publish
         with:
           registry-url: 'https://npm.pkg.github.com'
-      - run: npm run package:publish
+
+      - name: Publish Package
+        run: npm run package:publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: false

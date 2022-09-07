@@ -2,10 +2,9 @@ name: Package Publish
 
 on:
   workflow_call:
-    inputs:
-      secrets:
-        NPM_TOKEN:
-          required: true
+    secrets:
+      NPM_TOKEN:
+        required: true
 
 jobs:
   publish:

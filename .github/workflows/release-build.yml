@@ -5,6 +5,8 @@ on:
     secrets:
       npm_token:
         required: true
+      gh_token:
+        required: true
 
 jobs:
   build:
@@ -37,6 +39,7 @@ jobs:
         run: npm i
         env:
           npm_token: ${{ secrets.npm_token }}
+          gh_token: ${{ secrets.gh_token }}
 
       - name: Build Release
         run: npm run release:build

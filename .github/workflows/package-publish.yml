@@ -5,6 +5,8 @@ on:
     secrets:
       npm_token:
         required: true
+      gh_token:
+        required: true
 
 jobs:
   publish:

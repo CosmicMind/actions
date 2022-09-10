@@ -39,6 +39,7 @@ jobs:
         run: npm i
         env:
          npm_token: ${{ secrets.npm_token }}
+         github_token: ${{ secrets.gh_token }}
 
       - name: Build Dev
         run: npm run dev:build

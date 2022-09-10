@@ -32,6 +32,8 @@ jobs:
 
       - name: Install Dependencies
         run: npm i
+        env:
+          npm_token: ${{ secrets.npm_token }}
 
       - name: Build Release
         run: npm run release:build

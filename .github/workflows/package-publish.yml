@@ -51,7 +51,8 @@ jobs:
           node-version: 18.x
           registry-url: https://registry.npmjs.org
 
-      - run: npm run package:publish
+      - name: Package Publish
+        run: npm run package:publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
 
@@ -60,6 +61,7 @@ jobs:
         with:
           registry-url: https://npm.pkg.github.com
 
-      - run: npm run package:publish
+      - name: Package Publish
+        run: npm run package:publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.gh_token }}

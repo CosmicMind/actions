@@ -3,6 +3,8 @@ name: Docker Publish
 on:
   workflow_call:
     secrets:
+      npm_token:
+        required: true
       docker_username:
         required: true
       docker_token:
@@ -17,6 +19,40 @@ jobs:
     name: Docker Publish
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Actions
+        uses: actions/checkout@master
+
+      - name: Setup .npmrc
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.npm_token }}" > .npmrc
+
+      - name: Setup Node
+        uses: actions/setup-node@master
+        with:
+          node-version: 18.x
+
+      - name: Cache Node Modules
+        id: cache-npm
+        uses: actions/cache@master
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-release-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+
+      - if: ${{ false == steps.cache-npm.outputs.cache-hit }}
+        name: List Node Modules State
+        continue-on-error: true
+        run: npm list
+
+      - name: Install Dependencies
+        run: npm ci
+        env:
+          npm_token: ${{ secrets.npm_token }}
+
+      - name: Build Release
+        run: npm run release:build
+        continue-on-error: false
+
       - name: Checkout Actions
         uses: actions/checkout@master
 

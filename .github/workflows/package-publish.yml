@@ -57,7 +57,7 @@ jobs:
       - name: Package Publish
         run: npm run package:publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
+          node_auth_token: ${{ secrets.npm_token }}
 
       - name: GPR Publish
         uses: actions/setup-node@master
@@ -67,4 +67,4 @@ jobs:
       - name: Package Publish
         run: npm run package:publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.gh_token }}
+          node_auth_token: ${{ secrets.gh_token }}

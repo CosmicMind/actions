@@ -40,5 +40,5 @@ jobs:
         run: npm i
 
       - name: Build Dev
-        run: npm run dev:build
+        run: npm run build
         continue-on-error: false

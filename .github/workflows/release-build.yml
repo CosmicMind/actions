@@ -36,5 +36,5 @@ jobs:
           gh_token: ${{ secrets.github_token }}
 
       - name: Build Release
-        run: npm run release:build
+        run: npm run build
         continue-on-error: false

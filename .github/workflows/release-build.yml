@@ -36,5 +36,5 @@ jobs:
           gh_token: ${{ secrets.gh_token }}
 
       - name: Build Release
-        run: npm run release:build --workspaces
+        run: npm run release:build
         continue-on-error: false

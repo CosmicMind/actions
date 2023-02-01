@@ -2,9 +2,6 @@ name: Release Build
 
 on:
   workflow_call:
-    secrets:
-      npm_token:
-        required: true
 
 jobs:
   build:
@@ -13,9 +10,6 @@ jobs:
     steps:
       - name: Checkout Actions
         uses: actions/checkout@v3
-
-      - name: Setup .npmrc
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.npm_token }}" > .npmrc
 
       - name: Setup Node
         uses: actions/setup-node@v3
@@ -39,9 +33,8 @@ jobs:
       - name: Install Dependencies
         run: npm ci
         env:
-          npm_token: ${{ secrets.npm_token }}
           gh_token: ${{ secrets.gh_token }}
 
       - name: Build Release
-        run: npm run release:build
+        run: npm run release:build --workspaces
         continue-on-error: false

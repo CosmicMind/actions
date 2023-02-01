@@ -1,21 +1,15 @@
-name: Tests Build
+name: Test Build
 
 on:
   workflow_call:
-    secrets:
-      npm_token:
-        required: true
 
 jobs:
   build:
-    name: Tests Build
+    name: Test Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Actions
         uses: actions/checkout@v3
-
-      - name: Setup .npmrc
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.npm_token }}" > .npmrc
 
       - name: Setup Node
         uses: actions/setup-node@v3
@@ -37,14 +31,8 @@ jobs:
         run: npm list
 
       - name: Install Dependencies
-        run: npm i
-        env:
-          npm_token: ${{ secrets.npm_token }}
+        run: npm install
 
       - name: Build Tests
-        run: npm run tests:build
-        continue-on-error: false
-
-      - name: Execute Tests
-        run: npm run tests:exec
+        run: npm run test --workspaces
         continue-on-error: false

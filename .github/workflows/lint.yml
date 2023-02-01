@@ -2,9 +2,6 @@ name: Lint
 
 on:
   workflow_call:
-    secrets:
-      npm_token:
-        required: true
 
 jobs:
   lint:
@@ -13,9 +10,6 @@ jobs:
     steps:
       - name: Checkout Actions
         uses: actions/checkout@v3
-
-      - name: Setup .npmrc
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.npm_token }}" > .npmrc
 
       - name: Setup Node
         uses: actions/setup-node@v3
@@ -37,10 +31,8 @@ jobs:
         run: npm list
 
       - name: Install Dependencies
-        run: npm i
-        env:
-          npm_token: ${{ secrets.npm_token }}
+        run: npm install
 
       - name: Execute Linter
-        run: npm run lint:exec
+        run: npm run lint --workspaces
         continue-on-error: false

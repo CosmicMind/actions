@@ -3,7 +3,7 @@ name: Package Publish
 on:
   workflow_call:
     secrets:
-      NPM_TOKEN:
+      npm_token:
         required: true
 
 jobs:
@@ -39,7 +39,7 @@ jobs:
       - name: Install Dependencies
         run: npm ci
         env:
-          NPM_TOKEN: ${{ secrets.npm_token }}
+          npm_token: ${{ secrets.npm_token }}
 
       - name: Build Release
         run: npm run build

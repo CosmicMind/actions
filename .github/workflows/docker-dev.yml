@@ -3,11 +3,7 @@ name: Docker Publish
 on:
   workflow_call:
     secrets:
-      docker_username:
-        required: true
-      docker_token:
-        required: true
-      docker_tag:
+      npm_token:
         required: true
 
 jobs:
@@ -42,4 +38,6 @@ jobs:
 
       - name: Build Release
         run: npm run docker:dev --workspaces -if-present
+        env:
+          npm_token: ${{ secrets.npm_token }}
         continue-on-error: false

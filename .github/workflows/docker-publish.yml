@@ -41,7 +41,7 @@ jobs:
         run: npm ci
 
       - name: Build Release
-        run: npm run release:build --workspaces
+        run: npm run docker:build --workspaces -if-present
         continue-on-error: false
 
   push_to_registry:

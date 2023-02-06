@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@master
 
       - name: Start containers
-        run: docker compose -f "docker-compose.yml" up --build --exit-code-from materialjs
+        run: docker compose -f "docker-compose.yml" up --build --abort-on-container-exit
         env:
           docker_target: test
 

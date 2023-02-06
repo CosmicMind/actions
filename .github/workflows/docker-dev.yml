@@ -17,14 +17,9 @@ jobs:
         uses: actions/checkout@master
 
       - name: Start containers
-        run: docker compose -f "docker-compose.yml" up -d --build
+        run: docker compose -f "docker-compose.yml" up --build
         env:
           docker_target: test
-
-      - name: Install node
-        uses: actions/setup-node@master
-        with:
-          node-version: 18.x
 
       - name: Stop containers
         if: always()

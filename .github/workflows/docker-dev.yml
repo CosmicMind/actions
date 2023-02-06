@@ -18,28 +18,13 @@ jobs:
 
       - name: Start containers
         run: docker compose -f "docker-compose.yml" up -d --build
+        env:
+          docker_target: test
 
       - name: Install node
         uses: actions/setup-node@master
         with:
           node-version: 18.x
-
-      - name: Cache Node Modules
-        id: cache-npm
-        uses: actions/cache@master
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-
-      - if: ${{ false == steps.cache-npm.outputs.cache-hit }}
-        name: List Node Modules State
-        continue-on-error: true
-        run: npm list
-
-      - name: Install Dependencies
-        run: npm ci
 
       - name: Stop containers
         if: always()

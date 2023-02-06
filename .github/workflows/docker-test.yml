@@ -7,8 +7,8 @@ on:
         required: true
 
 jobs:
-  build-dev:
-    name: Build Dev
+  build:
+    name: Build
     timeout-minutes: 10
     runs-on: ubuntu-latest
 

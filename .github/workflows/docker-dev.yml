@@ -1,4 +1,4 @@
-name: Docker Release
+name: Docker Dev
 
 on:
   workflow_call:
@@ -19,7 +19,7 @@ jobs:
       - name: Start containers
         run: docker compose -f "docker-compose.yml" up --build --abort-on-container-exit
         env:
-          docker_target: release
+          docker_target: dev
           npm_token: ${{ secrets.npm_token }}
         continue-on-error: false
 

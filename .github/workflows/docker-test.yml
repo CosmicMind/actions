@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: build docker
+    name: test docker
     timeout-minutes: 10
     runs-on: ubuntu-latest
 

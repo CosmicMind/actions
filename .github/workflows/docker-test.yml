@@ -20,7 +20,7 @@ jobs:
         run: docker compose -f "docker-compose.yml" up --build --abort-on-container-exit
         env:
           docker_target: test
-          NPM_TOKEN: ${{ secrets.npm_token }}
+          npm_token: ${{ secrets.npm_token }}
         continue-on-error: false
 
       - name: Stop containers

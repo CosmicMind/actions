@@ -1,4 +1,4 @@
-name: Docker Dev
+name: Docker Development
 
 on:
   workflow_call:
@@ -8,21 +8,21 @@ on:
 
 jobs:
   build:
-    name: Build
+    name: build image
     timeout-minutes: 10
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: checkout actions
         uses: actions/checkout@master
 
-      - name: Start containers
+      - name: start containers
         run: docker compose -f "docker-compose.yml" up --build --abort-on-container-exit
         env:
           docker_target: dev
           npm_token: ${{ secrets.npm_token }}
         continue-on-error: false
 
-      - name: Stop containers
+      - name: stop containers
         if: always()
         run: docker compose -f "docker-compose.yml" down

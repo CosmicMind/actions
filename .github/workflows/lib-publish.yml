@@ -1,4 +1,4 @@
-name: Package Publish
+name: Library Publish
 
 on:
   workflow_call:
@@ -8,21 +8,21 @@ on:
 
 jobs:
   publish:
-    name: Package Publish
+    name: build library
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Actions
+      - name: checkout actions
         uses: actions/checkout@v3
 
-      - name: Setup .npmrc
+      - name: setup npm
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.npm_token }}" > .npmrc
 
-      - name: Setup Node
+      - name: setup node
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
 
-      - name: Cache Node Modules
+      - name: cache packages
         id: cache-npm
         uses: actions/cache@v3
         env:
@@ -32,37 +32,37 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
 
       - if: ${{ false == steps.cache-npm.outputs.cache-hit }}
-        name: List Node Modules State
+        name: list packages
         continue-on-error: true
         run: npm list
 
-      - name: Install Dependencies
+      - name: install packages
         run: npm ci
         env:
           npm_token: ${{ secrets.npm_token }}
 
-      - name: Build Release
+      - name: build library
         run: npm run build
         continue-on-error: false
 
-      - name: NPM Publish
+      - name: npm publish
         uses: actions/setup-node@v3
         with:
           always-auth: true
           node-version: 18.x
           registry-url: https://registry.npmjs.org
 
-      - name: Package Publish
+      - name: publish package
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
 
-      - name: GPR Publish
+      - name: gpr publish
         uses: actions/setup-node@v3
         with:
           registry-url: https://npm.pkg.github.com
 
-      - name: Package Publish
+      - name: publish package
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

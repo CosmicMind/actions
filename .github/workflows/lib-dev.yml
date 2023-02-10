@@ -1,22 +1,22 @@
-name: Release Build
+name: Library Development
 
 on:
   workflow_call:
 
 jobs:
   build:
-    name: Release Build
+    name: build library
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Actions
+      - name: checkout actions
         uses: actions/checkout@v3
 
-      - name: Setup Node
+      - name: setup node
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
 
-      - name: Cache Node Modules
+      - name: cache packages
         id: cache-npm
         uses: actions/cache@v3
         env:
@@ -26,15 +26,13 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
 
       - if: ${{ false == steps.cache-npm.outputs.cache-hit }}
-        name: List Node Modules State
+        name: list packages
         continue-on-error: true
         run: npm list
 
-      - name: Install Dependencies
+      - name: install packages
         run: npm ci
-        env:
-          gh_token: ${{ secrets.github_token }}
 
-      - name: Build Release
-        run: npm run build
+      - name: build library
+        run: npm run dev:build
         continue-on-error: false

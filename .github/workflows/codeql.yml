@@ -1,11 +1,11 @@
-name: CodeQL
+name: CodeQL Analysis
 
 on:
   workflow_call:
 
 jobs:
   analyze:
-    name: Analyze
+    name: analyze code
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -18,15 +18,15 @@ jobs:
         language:
           - javascript
           - typescript
-        
+
     steps:
-    - name: Checkout Repository
+    - name: checkout actions
       uses: actions/checkout@v3
 
-    - name: Initialize CodeQL
+    - name: initialize codeql
       uses: github/codeql-action/init@v2
       with:
         languages: ${{ matrix.language }}
-        
-    - name: Perform Analysis
+
+    - name: perform analysis
       uses: github/codeql-action/analyze@v2

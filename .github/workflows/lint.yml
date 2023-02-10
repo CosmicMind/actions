@@ -1,22 +1,22 @@
-name: Lint
+name: Lint Code
 
 on:
   workflow_call:
 
 jobs:
   lint:
-    name: Lint
+    name: lint code
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Actions
+      - name: checkout actions
         uses: actions/checkout@v3
 
-      - name: Setup Node
+      - name: setup node
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
 
-      - name: Cache Node Modules
+      - name: cache packages
         id: cache-npm
         uses: actions/cache@v3
         env:
@@ -26,13 +26,13 @@ jobs:
           key: ${{ runner.os }}-lint-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
 
       - if: ${{ false == steps.cache-npm.outputs.cache-hit }}
-        name: List Node Modules State
+        name: list packages
         continue-on-error: true
         run: npm list
 
-      - name: Install Dependencies
+      - name: install packages
         run: npm ci
 
-      - name: Execute Linter
+      - name: execute lint
         run: npm run lint
         continue-on-error: false

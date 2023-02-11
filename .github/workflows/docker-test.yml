@@ -2,6 +2,10 @@ name: Docker Test
 
 on:
   workflow_call:
+    inputs:
+      node_env:
+        type: string
+        required: false
     secrets:
       npm_token:
         required: true
@@ -21,6 +25,7 @@ jobs:
         env:
           docker_target: test
           npm_token: ${{ secrets.npm_token }}
+          node_env: ${{ inputs.node_env }}
         continue-on-error: false
 
       - name: stop containers

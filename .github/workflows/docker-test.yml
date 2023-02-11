@@ -6,6 +6,7 @@ on:
       node_env:
         type: string
         required: false
+        default: development
     secrets:
       npm_token:
         required: true

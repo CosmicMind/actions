@@ -21,7 +21,7 @@ on:
 
 jobs:
   build:
-    name: target - ${{ inputs.docker_target }} - env - ${{ inputs.node_env }} - mode - ${{ inputs.vite_mode }}
+    name: ${{ inputs.docker_target }} ${{ inputs.node_env }} ${{ inputs.vite_mode }}
     timeout-minutes: 10
     runs-on: ubuntu-latest
 

@@ -23,7 +23,7 @@ jobs:
       - name: start containers
         run: docker compose -f "docker-compose.yml" up --build --abort-on-container-exit
         env:
-          docker_target: dev
+          docker_target: release
           npm_token: ${{ secrets.npm_token }}
         continue-on-error: false
 

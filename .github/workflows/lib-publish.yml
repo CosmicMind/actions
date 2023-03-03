@@ -3,7 +3,7 @@ name: Library Publish
 on:
   workflow_call:
     secrets:
-      npm_token:
+      NPM_TOKEN:
         required: true
 
 jobs:
@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: setup npm
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.npm_token }}" > .npmrc
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
 
       - name: setup node
         uses: actions/setup-node@v3
@@ -39,7 +39,7 @@ jobs:
       - name: install packages
         run: npm ci
         env:
-          npm_token: ${{ secrets.npm_token }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: build library
         run: npm run build
@@ -55,7 +55,7 @@ jobs:
       - name: publish package
         run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: gpr publish
         uses: actions/setup-node@v3

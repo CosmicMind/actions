@@ -3,25 +3,25 @@ name: Library Development
 on:
   workflow_call:
     inputs:
-      build_target:
+      BUILD_TARGET:
         type: string
         required: false
         default: release
-      node_env:
+      NODE_ENV:
         type: string
         required: false
         default: production
-      vite_mode:
+      VITE_MODE:
         type: string
         required: false
         default: production
     secrets:
-      npm_token:
+      NPM_TOKEN:
         required: false
 
 jobs:
   build:
-    name: ${{ inputs.build_target }} ${{ inputs.node_env }} ${{ inputs.vite_mode }}
+    name: ${{ inputs.BUILD_TARGET }} ${{ inputs.NODE_ENV }} ${{ inputs.VITE_MODE }}
     runs-on: ubuntu-latest
     steps:
       - name: checkout actions
@@ -49,12 +49,12 @@ jobs:
       - name: install packages
         run: npm ci
         env:
-          npm_token: ${{ secrets.npm_token }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: build
-        run: npm run ${{ inputs.build_target }}
+        run: npm run ${{ inputs.BUILD_TARGET }}
         env:
-          build_target: ${{ inputs.build_target }}
-          node_env: ${{ inputs.node_env }}
-          vite_mode: ${{ inputs.vite_mode }}
+          BUILD_TARGET: ${{ inputs.BUILD_TARGET }}
+          NODE_ENV: ${{ inputs.NODE_ENV }}
+          VITE_MODE: ${{ inputs.VITE_MODE }}
         continue-on-error: false

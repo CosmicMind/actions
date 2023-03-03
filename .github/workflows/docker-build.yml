@@ -3,25 +3,25 @@ name: Docker Build
 on:
   workflow_call:
     inputs:
-      build_target:
+      BUILD_TARGET:
         type: string
         required: false
         default: release
-      node_env:
+      NODE_ENV:
         type: string
         required: false
         default: production
-      vite_mode:
+      VITE_MODE:
         type: string
         required: false
         default: production
     secrets:
-      npm_token:
+      NPM_TOKEN:
         required: false
 
 jobs:
   build:
-    name: ${{ inputs.build_target }} ${{ inputs.node_env }} ${{ inputs.vite_mode }}
+    name: ${{ inputs.BUILD_TARGET }} ${{ inputs.NODE_ENV }} ${{ inputs.VITE_MODE }}
     timeout-minutes: 10
     runs-on: ubuntu-latest
     
@@ -33,10 +33,10 @@ jobs:
       - name: start containers
         run: docker compose -f "docker-compose.yml" up --build --abort-on-container-exit
         env:
-          build_target: ${{ inputs.build_target }}
-          node_env: ${{ inputs.node_env }}
-          vite_mode: ${{ inputs.vite_mode }}
-          npm_token: ${{ secrets.npm_token }}
+          BUILD_TARGET: ${{ inputs.BUILD_TARGET }}
+          NODE_ENV: ${{ inputs.NODE_ENV }}
+          VITE_MODE: ${{ inputs.VITE_MODE }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         continue-on-error: false
 
       - name: stop containers

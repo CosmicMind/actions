@@ -9,7 +9,7 @@ on:
         required: true
       docker_tag:
         required: true
-      npm_token:
+      NPM_TOKEN:
         required: true
 
 jobs:
@@ -23,8 +23,8 @@ jobs:
       - name: start containers
         run: docker compose -f "docker-compose.yml" up --build --abort-on-container-exit
         env:
-          build_target: release
-          npm_token: ${{ secrets.npm_token }}
+          BUILD_TARGET: release
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         continue-on-error: false
 
       - name: stop containers

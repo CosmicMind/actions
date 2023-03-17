@@ -32,6 +32,8 @@ jobs:
         name: list packages
         continue-on-error: true
         run: npm list
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: install packages
         run: npm ci

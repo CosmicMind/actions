@@ -1,4 +1,4 @@
-name: Lint Code
+name: Lint
 
 on:
   workflow_call:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   lint:
-    name: lint code
+    name: code
     runs-on: ubuntu-latest
     steps:
       - name: checkout actions
@@ -26,20 +26,18 @@ jobs:
           cache-name: cache-node-modules
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-lint-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
 
       - if: ${{ false == steps.cache-npm.outputs.cache-hit }}
         name: list packages
         continue-on-error: true
         run: npm list
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
+        
       - name: install packages
         run: npm ci
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: execute lint
+      - name: lint
         run: npm run lint
         continue-on-error: false

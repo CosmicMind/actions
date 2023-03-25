@@ -68,7 +68,7 @@ jobs:
           NODE_ENV: ${{ github.sha }}
           VITE_MODE: ${{ inputs.VITE_MODE }}
         run: |
-          docker build --target ${{ inputs.BUILD_TARGET }} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --build-arg NPM_TOKEN=${{ secrets.NPM_TOKEN }} .
+          docker build --target ${{ inputs.BUILD_TARGET }} --build-arg NPM_TOKEN=${NPM_TOKEN} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Download task definition

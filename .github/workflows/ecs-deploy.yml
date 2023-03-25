@@ -15,6 +15,10 @@ on:
         type: string
         required: false
         default: production
+      AWS_REGION:
+        type: string
+        required: false
+        default: us-east-1
     secrets:
       NPM_TOKEN:
         required: false
@@ -57,16 +61,19 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-          AWS_REGION: us-east-1
+          AWS_REGION: ${{ inputs.AWS_REGION }}
           IMAGE_TAG: ${{ github.sha }}
+          BUILD_TARGET: ${{ inputs.BUILD_TARGET }}
+          NODE_ENV: ${{ github.sha }}
+          VITE_MODE: ${{ inputs.VITE_MODE }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          docker build --target release --build-arg NPM_TOKEN=${{ secrets.NPM_TOKEN }} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build --target ${{ inputs.BUILD_TARGET }} --build-arg NPM_TOKEN=${{ secrets.NPM_TOKEN }} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Download task definition
         run: |
-                aws ecs describe-task-definition --task-definition ${{ secrets.ECS_TASK }} \
-                --query taskDefinition > task-definition.json
+                aws ecs describe-task-definition --task-definition ${{ secrets.ECS_TASK }} --query taskDefinition > task-definition.json
 
       - name: Render Amazon ECS task definition
         id: ecs-cd-starter-container

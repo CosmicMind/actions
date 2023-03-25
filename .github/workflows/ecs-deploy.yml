@@ -36,7 +36,7 @@ on:
         required: true
 
 jobs:
-  deploy:
+  ecs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout actions
@@ -68,7 +68,7 @@ jobs:
           VITE_MODE: ${{ inputs.VITE_MODE }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          docker build --target ${{ inputs.BUILD_TARGET }} --build-arg NPM_TOKEN=${{ secrets.NPM_TOKEN }} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build --target ${{ inputs.BUILD_TARGET }} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --build-arg NPM_TOKEN=${{ secrets.NPM_TOKEN }} .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Download task definition

@@ -23,13 +23,13 @@ on:
       AWS_SECRET_ACCESS_KEY:
         required: true
       ECR_REPOSITORY:
-        required: false
+        required: true
       ECS_SERVICE:
-        required: false
+        required: true
       ECS_CLUSTER:
-        required: false
+        required: true
       ECS_TASK:
-        required: false
+        required: true
 
 jobs:
   deploy:

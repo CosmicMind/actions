@@ -59,6 +59,7 @@ jobs:
 
       - name: Build, tag, and push docker image to Amazon ECR
         env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
           AWS_REGION: ${{ inputs.AWS_REGION }}
@@ -66,7 +67,6 @@ jobs:
           BUILD_TARGET: ${{ inputs.BUILD_TARGET }}
           NODE_ENV: ${{ github.sha }}
           VITE_MODE: ${{ inputs.VITE_MODE }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           docker build --target ${{ inputs.BUILD_TARGET }} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --build-arg NPM_TOKEN=${{ secrets.NPM_TOKEN }} .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG

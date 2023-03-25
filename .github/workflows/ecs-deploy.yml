@@ -1,0 +1,88 @@
+name: ECS Deploy
+
+on:
+  workflow_call:
+    inputs:
+      BUILD_TARGET:
+        type: string
+        required: false
+        default: release
+      NODE_ENV:
+        type: string
+        required: false
+        default: production
+      VITE_MODE:
+        type: string
+        required: false
+        default: production
+    secrets:
+      NPM_TOKEN:
+        required: false
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      ECR_REPOSITORY:
+        required: false
+      ECS_SERVICE:
+        required: false
+      ECS_CLUSTER:
+        required: false
+      ECS_TASK:
+        required: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout actions
+        uses: actions/checkout@master
+      
+      - name: Get branch name
+        id: vars
+        run: echo ::set-output name=stage::${GITHUB_REF#refs/*/}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+          
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push docker image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+          AWS_REGION: us-east-1
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build --target release --build-arg NPM_TOKEN=${{ secrets.NPM_TOKEN }} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      - name: Download task definition
+        run: |
+                aws ecs describe-task-definition --task-definition ${{ secrets.ECS_TASK }} \
+                --query taskDefinition > task-definition.json
+
+      - name: Render Amazon ECS task definition
+        id: ecs-cd-starter-container
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: ${{ secrets.ECS_TASK }}
+          image: ${{ steps.login-ecr.outputs.registry }}/cosmicmind/dm-session/sessions:${{ github.sha }}
+      
+      - name: Deploy to Amazon ECS service
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.ecs-cd-starter-container.outputs.task-definition }}
+          service: ${{ secrets.ECS_SERVICE }}
+          cluster: ${{ secrets.ECS_CLUSTER }}
+      
+      - name: Logout of Amazon ECR
+        if: always()
+        run: docker logout ${{ steps.login-ecr.outputs.registry }}

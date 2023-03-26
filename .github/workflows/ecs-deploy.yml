@@ -59,6 +59,7 @@ jobs:
 
       - name: Build, tag, and push docker image to Amazon ECR
         env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           BUILD_TARGET: ${{ inputs.BUILD_TARGET }}
           NODE_ENV: ${{ inputs.NODE_ENV }}
           VITE_MODE: ${{ inputs.VITE_MODE }}
@@ -71,8 +72,10 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Download task definition
+        env: 
+          ECS_TASK: ${{ secrets.ECS_TASK }}
         run: |
-          aws ecs describe-task-definition --task-definition ${{ secrets.ECS_TASK }} --query taskDefinition > task-definition.json
+          aws ecs describe-task-definition --task-definition $ECS_TASK --query taskDefinition > task-definition.json
 
       - name: Render Amazon ECS task definition
         id: ecs-cd-starter-container

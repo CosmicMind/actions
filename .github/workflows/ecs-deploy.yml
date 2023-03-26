@@ -44,7 +44,7 @@ jobs:
       
       - name: Get branch name
         id: vars
-        run: echo ::set-output name=stage::${GITHUB_REF#refs/*/}
+        run: echo "{stage}={${GITHUB_REF#refs/*/}}" >> $GITHUB_STATE
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -68,7 +68,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          docker build --target ${{ inputs.BUILD_TARGET }} --build-arg NPM_TOKEN=${NPM_TOKEN} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build --target $BUILD_TARGET --build-arg NPM_TOKEN=$NPM_TOKEN -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Download task definition

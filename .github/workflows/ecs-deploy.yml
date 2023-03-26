@@ -68,12 +68,12 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          docker build --target ${{ inputs.BUILD_TARGET }} --build-arg NPM_TOKEN=${{ secrets.NPM_TOKEN }} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build --target ${{ inputs.BUILD_TARGET }} --build-arg NPM_TOKEN=${NPM_TOKEN} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Download task definition
         run: |
-                aws ecs describe-task-definition --task-definition ${{ secrets.ECS_TASK }} --query taskDefinition > task-definition.json
+          aws ecs describe-task-definition --task-definition ${{ secrets.ECS_TASK }} --query taskDefinition > task-definition.json
 
       - name: Render Amazon ECS task definition
         id: ecs-cd-starter-container

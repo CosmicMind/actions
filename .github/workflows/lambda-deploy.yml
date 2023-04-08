@@ -28,11 +28,7 @@ on:
         required: true
       ECR_REPOSITORY:
         required: true
-      ECS_SERVICE:
-        required: true
-      ECS_CLUSTER:
-        required: true
-      ECS_TASK:
+      LAMBDA_FUNCTION_ARN:
         required: true
 
 jobs:
@@ -71,12 +67,14 @@ jobs:
           docker build --target $BUILD_TARGET --build-arg NPM_TOKEN=$NPM_TOKEN -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-      # - name: Deploy to Amazon Lambda Service
-      #   id: update-lambda-function
-      #   run: |
-      #     aws lambda update-function-code --function-name  
+      - name: Deploy to Amazon Lambda Service
+        id: update-lambda-function
+        env:
+          LAMBDA_FUNCTION_ARN: ${{ secrets.LAMBDA_FUNCTION_ARN }}
+          IMAGE_URI: ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:${{ secrets.IMAGE_TAG }}
+        run: |
+          aws lambda update-function-code --function-name $LAMBDA_FUNCTION_ARN --image-uri $IMAGE_URI
 
-      
       - name: Logout of Amazon ECR
         if: always()
         run: docker logout ${{ steps.login-ecr.outputs.registry }}

@@ -67,7 +67,7 @@ jobs:
         run: |
           docker build --target $BUILD_TARGET --build-arg NPM_TOKEN=$NPM_TOKEN -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "{image}={$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG}"
+          echo "{image}={$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG}" >> "$GITHUB_OUTPUT"
 
       - name: Deploy to Amazon Lambda Service
         id: update-lambda-function
@@ -75,6 +75,7 @@ jobs:
           LAMBDA_FUNCTION_ARN: ${{ secrets.LAMBDA_FUNCTION_ARN }}
           IMAGE_URI: ${{ steps.push-to-ecr.outputs.image }}
         run: |
+          echo $IMAGE_URI
           aws lambda update-function-code --function-name $LAMBDA_FUNCTION_ARN --image-uri $IMAGE_URI
 
       - name: Logout of Amazon ECR

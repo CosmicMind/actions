@@ -67,7 +67,7 @@ jobs:
         run: |
           docker build --target $BUILD_TARGET --build-arg NPM_TOKEN=$NPM_TOKEN -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "{image}={$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG}" >> $IMAGE_URI
+          echo "{image}={$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG}"
 
       - name: Deploy to Amazon Lambda Service
         id: update-lambda-function

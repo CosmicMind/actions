@@ -32,6 +32,8 @@ on:
         required: true
       ECS_CLUSTER:
         required: true
+      ECS_CONTAINER:
+        required: true
       ECS_TASK:
         required: true
 
@@ -82,7 +84,7 @@ jobs:
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: task-definition.json
-          container-name: ${{ secrets.ECS_TASK }}
+          container-name: ${{ secrets.ECS_CONTAINER }}
           image: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
       
       - name: Deploy to Amazon ECS service

@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: checkout actions
         uses: actions/checkout@v3
-      
+
       - name: setup npm
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
 
@@ -35,10 +35,10 @@ jobs:
         name: list packages
         continue-on-error: true
         run: npm list
-        
+
       - name: install packages
         run: npm ci
-        
+
       - name: lint
         run: npm run lint
         continue-on-error: false

@@ -51,7 +51,7 @@ jobs:
 
       - name: install packages
         run: npm ci
-        
+
       - name: build
         run: npm run ${{ inputs.BUILD_TARGET }}
         env:

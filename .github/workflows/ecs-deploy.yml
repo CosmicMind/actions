@@ -43,7 +43,7 @@ jobs:
     steps:
       - name: checkout actions
         uses: actions/checkout@master
-      
+
       - name: Get branch name
         id: vars
         run: echo "{stage}={${GITHUB_REF#refs/*/}}" >> $GITHUB_STATE
@@ -54,7 +54,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ inputs.AWS_REGION }}
-          
+
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
@@ -74,7 +74,7 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Download task definition
-        env: 
+        env:
           ECS_TASK: ${{ secrets.ECS_TASK }}
         run: |
           aws ecs describe-task-definition --task-definition $ECS_TASK --query taskDefinition > task-definition.json
@@ -86,14 +86,14 @@ jobs:
           task-definition: task-definition.json
           container-name: ${{ secrets.ECS_CONTAINER }}
           image: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
-      
+
       - name: Deploy to Amazon ECS service
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.ecs-cd-starter-container.outputs.task-definition }}
           service: ${{ secrets.ECS_SERVICE }}
           cluster: ${{ secrets.ECS_CLUSTER }}
-      
+
       - name: Logout of Amazon ECR
         if: always()
         run: docker logout ${{ steps.login-ecr.outputs.registry }}

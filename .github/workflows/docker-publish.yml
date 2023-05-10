@@ -11,6 +11,8 @@ on:
         required: true
       NPM_TOKEN:
         required: true
+      FORTAWESOME_TOKEN:
+        required: true
 
 jobs:
   build:
@@ -25,6 +27,7 @@ jobs:
         env:
           BUILD_TARGET: release
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          FORTAWESOME_TOKEN: ${{ secrets.FORTAWESOME_TOKEN }}
         continue-on-error: false
 
       - name: stop containers

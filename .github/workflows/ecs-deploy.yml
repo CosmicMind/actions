@@ -36,6 +36,8 @@ on:
         required: true
       ECS_TASK:
         required: true
+      FORTAWESOME_TOKEN:
+        required: false
 
 jobs:
   ecs:
@@ -62,6 +64,7 @@ jobs:
       - name: Build, tag, and push docker image to Amazon ECR
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          FORTAWESOME_TOKEN: ${{ secrets.FORTAWESOME_TOKEN }}
           BUILD_TARGET: ${{ inputs.BUILD_TARGET }}
           NODE_ENV: ${{ inputs.NODE_ENV }}
           VITE_MODE: ${{ inputs.VITE_MODE }}

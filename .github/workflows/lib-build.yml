@@ -18,6 +18,8 @@ on:
     secrets:
       NPM_TOKEN:
         required: false
+      FORTAWESOME_TOKEN:
+        required: false
 
 jobs:
   build:

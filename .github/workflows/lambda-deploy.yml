@@ -11,7 +11,7 @@ on:
         type: string
         required: false
         default: production
-      VITE_MODE:
+      SERVER_MODE:
         type: string
         required: false
         default: production
@@ -37,7 +37,7 @@ jobs:
     steps:
       - name: checkout actions
         uses: actions/checkout@master
-      
+
       - name: Get branch name
         id: vars
         run: echo "{stage}={${GITHUB_REF#refs/*/}}" >> $GITHUB_STATE
@@ -48,7 +48,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ inputs.AWS_REGION }}
-          
+
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
@@ -59,7 +59,7 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           BUILD_TARGET: ${{ inputs.BUILD_TARGET }}
           NODE_ENV: ${{ inputs.NODE_ENV }}
-          VITE_MODE: ${{ inputs.VITE_MODE }}
+          SERVER_MODE: ${{ inputs.SERVER_MODE }}
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
           AWS_REGION: ${{ inputs.AWS_REGION }}

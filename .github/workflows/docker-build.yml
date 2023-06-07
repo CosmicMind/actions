@@ -24,7 +24,6 @@ on:
 jobs:
   deployment:
     runs-on: ubuntu-latest
-    environment: development
     steps:
       build:
         name: ${{ inputs.BUILD_TARGET }} ${{ inputs.NODE_ENV }} ${{ inputs.VITE_MODE }}

@@ -22,28 +22,25 @@ on:
         required: false
 
 jobs:
-  deployment:
+  build:
+    name: ${{ inputs.BUILD_TARGET }} ${{ inputs.NODE_ENV }} ${{ inputs.VITE_MODE }}
+    timeout-minutes: 10
     runs-on: ubuntu-latest
+
     steps:
-      build:
-        name: ${{ inputs.BUILD_TARGET }} ${{ inputs.NODE_ENV }} ${{ inputs.VITE_MODE }}
-        timeout-minutes: 10
-        runs-on: ubuntu-latest
+      - name: checkout actions
+        uses: actions/checkout@master
 
-        steps:
-          - name: checkout actions
-            uses: actions/checkout@master
+      - name: start containers
+        run: docker compose -f "docker-compose.yml" up --build --abort-on-container-exit
+        env:
+          BUILD_TARGET: ${{ inputs.BUILD_TARGET }}
+          NODE_ENV: ${{ inputs.NODE_ENV }}
+          VITE_MODE: ${{ inputs.VITE_MODE }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          FORTAWESOME_TOKEN: ${{ secrets.FORTAWESOME_TOKEN }}
+        continue-on-error: false
 
-          - name: start containers
-            run: docker compose -f "docker-compose.yml" up --build --abort-on-container-exit
-            env:
-              BUILD_TARGET: ${{ inputs.BUILD_TARGET }}
-              NODE_ENV: ${{ inputs.NODE_ENV }}
-              VITE_MODE: ${{ inputs.VITE_MODE }}
-              NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-              FORTAWESOME_TOKEN: ${{ secrets.FORTAWESOME_TOKEN }}
-            continue-on-error: false
-
-          - name: stop containers
-            if: always()
-            run: docker compose -f "docker-compose.yml" down
+      - name: stop containers
+        if: always()
+        run: docker compose -f "docker-compose.yml" down

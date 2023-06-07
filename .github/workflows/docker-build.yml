@@ -11,7 +11,7 @@ on:
         type: string
         required: false
         default: production
-      VITE_MODE:
+      SERVER_MODE:
         type: string
         required: false
         default: production
@@ -27,7 +27,7 @@ jobs:
     environment: development
     steps:
       build:
-        name: ${{ inputs.BUILD_TARGET }} ${{ inputs.NODE_ENV }} ${{ inputs.VITE_MODE }}
+        name: ${{ inputs.BUILD_TARGET }} ${{ inputs.NODE_ENV }} ${{ inputs.SERVER_MODE }}
         timeout-minutes: 10
         runs-on: ubuntu-latest
 
@@ -40,7 +40,7 @@ jobs:
             env:
               BUILD_TARGET: ${{ inputs.BUILD_TARGET }}
               NODE_ENV: ${{ inputs.NODE_ENV }}
-              VITE_MODE: ${{ inputs.VITE_MODE }}
+              SERVER_MODE: ${{ inputs.SERVER_MODE }}
               NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
               FORTAWESOME_TOKEN: ${{ secrets.FORTAWESOME_TOKEN }}
             continue-on-error: false

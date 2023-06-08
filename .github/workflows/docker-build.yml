@@ -20,13 +20,20 @@ on:
         required: false
       FORTAWESOME_TOKEN:
         required: false
+      SERVER_SESSION_SECRET_KEY:
+        required: false
+      SERVER_KEYGRIP_KEY_A:
+        required: false
+      SERVER_KEYGRIP_KEY_B:
+        required: false
+      SERVER_KEYGRIP_KEY_C:
+        required: false
 
 jobs:
-  build:
+  deployment:
     name: ${{ inputs.BUILD_TARGET }} ${{ inputs.NODE_ENV }} ${{ inputs.SERVER_MODE }}
     timeout-minutes: 10
     runs-on: ubuntu-latest
-
     steps:
       - name: checkout actions
         uses: actions/checkout@master
@@ -37,8 +44,15 @@ jobs:
           BUILD_TARGET: ${{ inputs.BUILD_TARGET }}
           NODE_ENV: ${{ inputs.NODE_ENV }}
           SERVER_MODE: ${{ inputs.SERVER_MODE }}
+
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           FORTAWESOME_TOKEN: ${{ secrets.FORTAWESOME_TOKEN }}
+
+          SERVER_SESSION_SECRET_KEY: ${{ secrets.SERVER_SESSION_SECRET_KEY }}
+          SERVER_KEYGRIP_KEY_A: ${{ secrets.SERVER_KEYGRIP_KEY_A }}
+          SERVER_KEYGRIP_KEY_B: ${{ secrets.SERVER_KEYGRIP_KEY_B }}
+          SERVER_KEYGRIP_KEY_C: ${{ secrets.SERVER_KEYGRIP_KEY_C }}
+
         continue-on-error: false
 
       - name: stop containers

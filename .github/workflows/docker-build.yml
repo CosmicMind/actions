@@ -11,6 +11,10 @@ on:
         type: string
         required: false
         default: production
+      VITE_MODE:
+        type: string
+        required: false
+        default: production
       SERVER_MODE:
         type: string
         required: false

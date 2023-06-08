@@ -22,11 +22,11 @@ on:
 #        type: string
 #        required: true
 #
-#    secrets:
-#      NPM_TOKEN:
-#        required: false
-#      FORTAWESOME_TOKEN:
-#        required: false
+    secrets:
+      NPM_TOKEN:
+        required: false
+      FORTAWESOME_TOKEN:
+        required: false
 #      SERVER_SESSION_SECRET_KEY:
 #        required: false
 #      SERVER_KEYGRIP_KEY_A:
@@ -49,14 +49,14 @@ jobs:
         uses: actions/checkout@master
 
       - name: start containers
-        run: docker compose -f "docker-compose.yml" up --build
+        run: docker compose -f "docker-compose.yml" up --build --abort-on-container-exit
         env:
-          BUILD_TARGET: ${{ inputs.BUILD_TARGET }}
-          NODE_ENV: ${{ inputs.NODE_ENV }}
+          BUILD_TARGET: ${{ vars.BUILD_TARGET }}
+          NODE_ENV: ${{ vars.NODE_ENV }}
 
-          SERVER_MODE: ${{ inputs.SERVER_MODE }}
-          SERVER_PORT: ${{ inputs.SERVER_PORT }}
-          SERVER_COOKIE_DOMAIN: ${{ inputs.SERVER_COOKIE_DOMAIN }}
+          SERVER_MODE: ${{ vars.SERVER_MODE }}
+          SERVER_PORT: ${{ vars.SERVER_PORT }}
+          SERVER_COOKIE_DOMAIN: ${{ vars.SERVER_COOKIE_DOMAIN }}
 
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           FORTAWESOME_TOKEN: ${{ secrets.FORTAWESOME_TOKEN }}

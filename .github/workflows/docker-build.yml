@@ -2,45 +2,48 @@ name: Docker Build
 
 on:
   workflow_call:
-    inputs:
-      BUILD_TARGET:
-        type: string
-        required: true
-      NODE_ENV:
-        type: string
-        required: true
-      VITE_MODE:
-        type: string
-        required: true
-      SERVER_MODE:
-        type: string
-        required: true
-      SERVER_PORT:
-        type: string
-        required: true
-      SERVER_COOKIE_DOMAIN:
-        type: string
-        required: true
-
-    secrets:
-      NPM_TOKEN:
-        required: false
-      FORTAWESOME_TOKEN:
-        required: false
-      SERVER_SESSION_SECRET_KEY:
-        required: false
-      SERVER_KEYGRIP_KEY_A:
-        required: false
-      SERVER_KEYGRIP_KEY_B:
-        required: false
-      SERVER_KEYGRIP_KEY_C:
-        required: false
+#    inputs:
+#      BUILD_TARGET:
+#        type: string
+#        required: true
+#      NODE_ENV:
+#        type: string
+#        required: true
+#      VITE_MODE:
+#        type: string
+#        required: true
+#      SERVER_MODE:
+#        type: string
+#        required: true
+#      SERVER_PORT:
+#        type: string
+#        required: true
+#      SERVER_COOKIE_DOMAIN:
+#        type: string
+#        required: true
+#
+#    secrets:
+#      NPM_TOKEN:
+#        required: false
+#      FORTAWESOME_TOKEN:
+#        required: false
+#      SERVER_SESSION_SECRET_KEY:
+#        required: false
+#      SERVER_KEYGRIP_KEY_A:
+#        required: false
+#      SERVER_KEYGRIP_KEY_B:
+#        required: false
+#      SERVER_KEYGRIP_KEY_C:
+#        required: false
 
 jobs:
   deployment:
     name: ${{ inputs.BUILD_TARGET }} ${{ inputs.NODE_ENV }} ${{ inputs.SERVER_MODE }}
     timeout-minutes: 10
     runs-on: ubuntu-latest
+    environment:
+      name: development
+      url: github.com
     steps:
       - name: checkout actions
         uses: actions/checkout@master

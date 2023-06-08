@@ -49,7 +49,7 @@ jobs:
         uses: actions/checkout@master
 
       - name: start containers
-        run: docker compose -f "docker-compose.yml" up --build --abort-on-container-exit
+        run: docker compose -f "docker-compose.yml" up --build
         env:
           BUILD_TARGET: ${{ inputs.BUILD_TARGET }}
           NODE_ENV: ${{ inputs.NODE_ENV }}

@@ -5,20 +5,23 @@ on:
     inputs:
       BUILD_TARGET:
         type: string
-        required: false
-        default: release
+        required: true
       NODE_ENV:
         type: string
-        required: false
-        default: production
+        required: true
       VITE_MODE:
         type: string
-        required: false
-        default: production
+        required: true
       SERVER_MODE:
         type: string
-        required: false
-        default: production
+        required: true
+      SERVER_PORT:
+        type: string
+        required: true
+      SERVER_COOKIE_DOMAIN:
+        type: string
+        required: true
+
     secrets:
       NPM_TOKEN:
         required: false
@@ -47,7 +50,10 @@ jobs:
         env:
           BUILD_TARGET: ${{ inputs.BUILD_TARGET }}
           NODE_ENV: ${{ inputs.NODE_ENV }}
+
           SERVER_MODE: ${{ inputs.SERVER_MODE }}
+          SERVER_PORT: ${{ inputs.SERVER_PORT }}
+          SERVER_COOKIE_DOMAIN: ${{ inputs.SERVER_COOKIE_DOMAIN }}
 
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           FORTAWESOME_TOKEN: ${{ secrets.FORTAWESOME_TOKEN }}

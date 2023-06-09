@@ -3,45 +3,20 @@ name: ECS Deploy
 on:
   workflow_call:
     inputs:
-      BUILD_TARGET:
+      ENVIRONMENT:
         type: string
-        required: false
-        default: release
-      NODE_ENV:
-        type: string
-        required: false
-        default: production
-      SERVER_MODE:
-        type: string
-        required: false
-        default: production
-      AWS_REGION:
-        type: string
-        required: false
-        default: us-east-1
+        required: true
+
     secrets:
       NPM_TOKEN:
-        required: true
-      AWS_ACCESS_KEY_ID:
-        required: true
-      AWS_SECRET_ACCESS_KEY:
-        required: true
-      ECR_REPOSITORY:
-        required: true
-      ECS_SERVICE:
-        required: true
-      ECS_CLUSTER:
-        required: true
-      ECS_CONTAINER:
-        required: true
-      ECS_TASK:
-        required: true
+        required: false
       FORTAWESOME_TOKEN:
         required: false
 
 jobs:
   ecs:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.ENVIRONMENT }}
     steps:
       - name: checkout actions
         uses: actions/checkout@master

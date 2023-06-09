@@ -17,7 +17,7 @@ on:
         required: false
 
 jobs:
-  deployment:
+  build:
     environment: ${{ inputs.ENVIRONMENT }}
     name: ${{ inputs.ENVIRONMENT }} - ${{ inputs.SERVER_MODE }}
     timeout-minutes: 10

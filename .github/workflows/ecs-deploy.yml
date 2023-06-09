@@ -6,6 +6,9 @@ on:
       ENVIRONMENT:
         type: string
         required: true
+      SERVER_MODE:
+        type: string
+        required: true
 
     secrets:
       NPM_TOKEN:
@@ -14,9 +17,10 @@ on:
         required: false
 
 jobs:
-  ecs:
+  deploy:
     runs-on: ubuntu-latest
     environment: ${{ inputs.ENVIRONMENT }}
+    name: ${{ inputs.ENVIRONMENT }} - ${{ inputs.SERVER_MODE }}
     steps:
       - name: checkout actions
         uses: actions/checkout@master
@@ -38,15 +42,21 @@ jobs:
 
       - name: Build, tag, and push docker image to Amazon ECR
         env:
+          BUILD_TARGET: ${{ vars.BUILD_TARGET }}
+          NODE_ENV: ${{ vars.NODE_ENV }}
+
+          SERVER_MODE: ${{ inputs.SERVER_MODE }}
+          SERVER_PORT: ${{ vars.SERVER_PORT }}
+          SERVER_COOKIE_DOMAIN: ${{ vars.SERVER_COOKIE_DOMAIN }}
+
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           FORTAWESOME_TOKEN: ${{ secrets.FORTAWESOME_TOKEN }}
-          BUILD_TARGET: ${{ inputs.BUILD_TARGET }}
-          NODE_ENV: ${{ inputs.NODE_ENV }}
-          SERVER_MODE: ${{ inputs.SERVER_MODE }}
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-          AWS_REGION: ${{ inputs.AWS_REGION }}
-          IMAGE_TAG: ${{ github.sha }}
+
+          SERVER_SESSION_SECRET_KEY: ${{ secrets.SERVER_SESSION_SECRET_KEY }}
+          SERVER_KEYGRIP_KEY_A: ${{ secrets.SERVER_KEYGRIP_KEY_A }}
+          SERVER_KEYGRIP_KEY_B: ${{ secrets.SERVER_KEYGRIP_KEY_B }}
+          SERVER_KEYGRIP_KEY_C: ${{ secrets.SERVER_KEYGRIP_KEY_C }}
+
         run: |
           docker build --target $BUILD_TARGET --build-arg NPM_TOKEN=$NPM_TOKEN --build-arg FORTAWESOME_TOKEN=$FORTAWESOME_TOKEN -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG

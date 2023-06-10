@@ -11,7 +11,7 @@ on:
         type: string
         required: false
         default: production
-      SERVER_MODE:
+      BUILD_MODE:
         type: string
         required: false
         default: production
@@ -59,7 +59,7 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           BUILD_TARGET: ${{ inputs.BUILD_TARGET }}
           NODE_ENV: ${{ inputs.NODE_ENV }}
-          SERVER_MODE: ${{ inputs.SERVER_MODE }}
+          BUILD_MODE: ${{ inputs.BUILD_MODE }}
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
           AWS_REGION: ${{ inputs.AWS_REGION }}

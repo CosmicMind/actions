@@ -22,6 +22,8 @@ on:
     secrets:
       NPM_TOKEN:
         required: true
+      FORTAWESOME_TOKEN:
+        required: false
       AWS_ACCESS_KEY_ID:
         required: true
       AWS_SECRET_ACCESS_KEY:
@@ -36,8 +38,6 @@ on:
         required: true
       ECS_TASK:
         required: true
-      FORTAWESOME_TOKEN:
-        required: false
 
 jobs:
   ecs:

@@ -3,45 +3,24 @@ name: ECS Deploy
 on:
   workflow_call:
     inputs:
-      BUILD_TARGET:
+      ENVIRONMENT:
         type: string
-        required: false
-        default: release
-      NODE_ENV:
+        required: true
+      SERVER_MODE:
         type: string
-        required: false
-        default: production
-      BUILD_MODE:
-        type: string
-        required: false
-        default: production
-      AWS_REGION:
-        type: string
-        required: false
-        default: us-east-1
-    secrets:
-      NPM_TOKEN:
-        required: true
-      FORTAWESOME_TOKEN:
-        required: false
-      AWS_ACCESS_KEY_ID:
-        required: true
-      AWS_SECRET_ACCESS_KEY:
-        required: true
-      ECR_REPOSITORY:
-        required: true
-      ECS_SERVICE:
-        required: true
-      ECS_CLUSTER:
-        required: true
-      ECS_CONTAINER:
-        required: true
-      ECS_TASK:
         required: true
 
+    secrets:
+      NPM_TOKEN:
+        required: false
+      FORTAWESOME_TOKEN:
+        required: false
+
 jobs:
-  ecs:
+  deploy:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.ENVIRONMENT }}
+    name: ${{ inputs.ENVIRONMENT }} - ${{ inputs.SERVER_MODE }}
     steps:
       - name: checkout actions
         uses: actions/checkout@master
@@ -53,9 +32,9 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
+          aws-region: ${{ secrets.AWS_REGION }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ inputs.AWS_REGION }}
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -63,15 +42,21 @@ jobs:
 
       - name: Build, tag, and push docker image to Amazon ECR
         env:
+          BUILD_TARGET: ${{ vars.BUILD_TARGET }}
+          NODE_ENV: ${{ vars.NODE_ENV }}
+
+          SERVER_MODE: ${{ inputs.SERVER_MODE }}
+          SERVER_PORT: ${{ vars.SERVER_PORT }}
+          SERVER_COOKIE_DOMAIN: ${{ vars.SERVER_COOKIE_DOMAIN }}
+
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           FORTAWESOME_TOKEN: ${{ secrets.FORTAWESOME_TOKEN }}
-          BUILD_TARGET: ${{ inputs.BUILD_TARGET }}
-          NODE_ENV: ${{ inputs.NODE_ENV }}
-          BUILD_MODE: ${{ inputs.BUILD_MODE }}
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-          AWS_REGION: ${{ inputs.AWS_REGION }}
-          IMAGE_TAG: ${{ github.sha }}
+
+          SERVER_SESSION_SECRET_KEY: ${{ secrets.SERVER_SESSION_SECRET_KEY }}
+          SERVER_KEYGRIP_KEY_A: ${{ secrets.SERVER_KEYGRIP_KEY_A }}
+          SERVER_KEYGRIP_KEY_B: ${{ secrets.SERVER_KEYGRIP_KEY_B }}
+          SERVER_KEYGRIP_KEY_C: ${{ secrets.SERVER_KEYGRIP_KEY_C }}
+
         run: |
           docker build --target $BUILD_TARGET --build-arg NPM_TOKEN=$NPM_TOKEN --build-arg FORTAWESOME_TOKEN=$FORTAWESOME_TOKEN -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG

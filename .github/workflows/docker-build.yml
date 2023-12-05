@@ -3,35 +3,23 @@ name: Docker Build
 on:
   workflow_call:
     inputs:
-      BUILD_TARGET:
+      ENVIRONMENT:
         type: string
-        required: false
-        default: release
-      NODE_ENV:
+        required: true
+      SERVER_MODE:
         type: string
-        required: false
-        default: production
-      BUILD_MODE:
-        type: string
-        required: false
-        default: production
+        required: true
+
     secrets:
       NPM_TOKEN:
         required: false
       FORTAWESOME_TOKEN:
         required: false
-      SERVER_SESSION_SECRET_KEY:
-        required: false
-      SERVER_KEYGRIP_KEY_A:
-        required: false
-      SERVER_KEYGRIP_KEY_B:
-        required: false
-      SERVER_KEYGRIP_KEY_C:
-        required: false
 
 jobs:
-  deployment:
-    name: ${{ inputs.BUILD_TARGET }} ${{ inputs.NODE_ENV }} ${{ inputs.BUILD_MODE }}
+  build:
+    environment: ${{ inputs.ENVIRONMENT }}
+    name: ${{ inputs.ENVIRONMENT }} - ${{ inputs.SERVER_MODE }}
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
@@ -41,9 +29,12 @@ jobs:
       - name: start containers
         run: docker compose -f "docker-compose.yml" up --build --abort-on-container-exit
         env:
-          BUILD_TARGET: ${{ inputs.BUILD_TARGET }}
-          NODE_ENV: ${{ inputs.NODE_ENV }}
-          BUILD_MODE: ${{ inputs.BUILD_MODE }}
+          BUILD_TARGET: ${{ vars.BUILD_TARGET }}
+          NODE_ENV: ${{ vars.NODE_ENV }}
+
+          SERVER_MODE: ${{ inputs.SERVER_MODE }}
+          SERVER_PORT: ${{ vars.SERVER_PORT }}
+          SERVER_COOKIE_DOMAIN: ${{ vars.SERVER_COOKIE_DOMAIN }}
 
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           FORTAWESOME_TOKEN: ${{ secrets.FORTAWESOME_TOKEN }}

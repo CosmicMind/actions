@@ -4,6 +4,10 @@ on:
   workflow_call:
 
 jobs:
+  permissions:
+    actions: read
+    security-events: write
+    
   analyze:
     name: analyze code
     runs-on: ubuntu-latest

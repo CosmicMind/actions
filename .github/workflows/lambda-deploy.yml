@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout actions
-        uses: actions/checkout@master
+        uses: actions/checkout@v3
 
       - name: Get branch name
         id: vars

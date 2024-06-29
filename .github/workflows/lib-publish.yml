@@ -42,7 +42,7 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: build library
-        run: npm run build
+        run: npm run release
         continue-on-error: false
 
       - name: npm publish

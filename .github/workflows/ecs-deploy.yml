@@ -23,7 +23,7 @@ jobs:
     name: ${{ inputs.ENVIRONMENT }} - ${{ inputs.SERVER_MODE }}
     steps:
       - name: checkout actions
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Get branch name
         id: vars

@@ -12,7 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       packages: write
-  
+      contents: read
+
     steps:
       - name: checkout actions
         uses: actions/checkout@v4
@@ -59,6 +60,9 @@ jobs:
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: setup ghcr
+        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > .npmrc
 
       - name: gpr publish
         uses: actions/setup-node@v4

@@ -6,13 +6,13 @@ on:
       NPM_TOKEN:
         required: true
 
-permissions:
-  packages: write
-  
 jobs:
   publish:
     name: build library
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+  
     steps:
       - name: checkout actions
         uses: actions/checkout@v4

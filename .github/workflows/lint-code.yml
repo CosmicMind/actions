@@ -1,4 +1,4 @@
-name: Lint
+name: Lint Code
 
 on:
   workflow_call:
@@ -10,22 +10,22 @@ on:
 
 jobs:
   lint:
-    name: code
+    name: lint code
     runs-on: ubuntu-latest
     steps:
       - name: checkout actions
         uses: actions/checkout@v4
 
-      - name: setup npm
-        run: |
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
-          echo "@fortawesome:registry=https://npm.fontawesome.com/" >> .npmrc
-          echo "//npm.fontawesome.com/:_authToken=${{ secrets.FORTAWESOME_TOKEN }}" >> .npmrc
-
       - name: setup node
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
+
+      - name: setup .npmrc
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+          echo "@fortawesome:registry=https://npm.fontawesome.com/" >> .npmrc
+          echo "//npm.fontawesome.com/:_authToken=${{ secrets.FORTAWESOME_TOKEN }}" >> .npmrc
 
       - name: cache packages
         id: cache-npm
@@ -41,9 +41,9 @@ jobs:
         continue-on-error: true
         run: npm list
 
-      - name: install packages
+      - name: run ci
         run: npm ci
 
-      - name: lint
+      - name: run lint
         run: npm run lint
         continue-on-error: false

@@ -44,6 +44,6 @@ jobs:
       - name: run ci
         run: npm ci
 
-      - name: run lint
+      - name: run linter
         run: npm run lint
         continue-on-error: false

@@ -7,67 +7,95 @@ on:
         required: true
 
 jobs:
-  publish:
-    name: build library
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+      - run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > .npmrc
+      - run: npm ci
+
+  publish-gpr:
+    needs: build
     runs-on: ubuntu-latest
     permissions:
       packages: write
       contents: read
-
     steps:
-      - name: checkout actions
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          registry-url: https://npm.pkg.github.com/
+      - run: npm ci
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+#jobs:
+#  publish:
+#    name: build library
+#    runs-on: ubuntu-latest
+#    permissions:
+#      packages: write
+#      contents: read
 #
-#      - name: setup npm
-#        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
-
-      - name: setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-
-      - name: cache packages
-        id: cache-npm
-        uses: actions/cache@v4
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-
-      - if: ${{ false == steps.cache-npm.outputs.cache-hit }}
-        name: list packages
-        continue-on-error: true
-        run: npm list
-
-      - name: install packages
-        run: npm ci
-#        env:
-#          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: build library
-        run: npm run release
-        continue-on-error: false
-
-      - name: gpr publish
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-          registry-url: https://npm.pkg.github.com
-
-      - name: publish package
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-#      - name: npm publish
+#    steps:
+#      - name: checkout actions
+#        uses: actions/checkout@v4
+##
+##      - name: setup npm
+##        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+#
+#      - name: setup node
 #        uses: actions/setup-node@v4
 #        with:
-#          always-auth: true
 #          node-version: 20.x
-#          registry-url: https://registry.npmjs.org
+#
+#      - name: cache packages
+#        id: cache-npm
+#        uses: actions/cache@v4
+#        env:
+#          cache-name: cache-node-modules
+#        with:
+#          path: ~/.npm
+#          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+#
+#      - if: ${{ false == steps.cache-npm.outputs.cache-hit }}
+#        name: list packages
+#        continue-on-error: true
+#        run: npm list
+#
+#      - name: install packages
+#        run: npm ci
+##        env:
+##          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#
+#      - name: build library
+#        run: npm run release
+#        continue-on-error: false
+#
+#      - name: gpr publish
+#        uses: actions/setup-node@v4
+#        with:
+#          node-version: 20.x
+#          registry-url: https://npm.pkg.github.com
 #
 #      - name: publish package
 #        run: npm publish
 #        env:
-#          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+#          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#
+##      - name: npm publish
+##        uses: actions/setup-node@v4
+##        with:
+##          always-auth: true
+##          node-version: 20.x
+##          registry-url: https://registry.npmjs.org
+##
+##      - name: publish package
+##        run: npm publish
+##        env:
+##          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

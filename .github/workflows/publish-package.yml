@@ -44,9 +44,16 @@ jobs:
 
       - name: run ci
         run: npm ci
+        env:
+          NODE_ENV: production
+          VITE_MODE: production
 
-      - name: run release
+      - name: build
         run: npm run release
+        env:
+          BUILD_TARGET: release
+          NODE_ENV: production
+          VITE_MODE: production
         continue-on-error: false
 
       - name: publish to npm

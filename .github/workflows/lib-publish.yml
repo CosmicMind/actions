@@ -49,20 +49,8 @@ jobs:
         run: npm run release
         continue-on-error: false
 
-      - name: npm publish
-        uses: actions/setup-node@v4
-        with:
-          always-auth: true
-          node-version: 20.x
-          registry-url: https://registry.npmjs.org
-
-      - name: publish package
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: setup ghcr
-        run: rm .npmrc
+      - name: setup npm
+        run: echo "//https://npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > .npmrc
 
       - name: gpr publish
         uses: actions/setup-node@v4
@@ -75,3 +63,15 @@ jobs:
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: npm publish
+        uses: actions/setup-node@v4
+        with:
+          always-auth: true
+          node-version: 20.x
+          registry-url: https://registry.npmjs.org
+
+      - name: publish package
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

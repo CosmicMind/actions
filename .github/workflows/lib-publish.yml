@@ -17,15 +17,17 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20.x
-          registry-url: 'https://registry.npmjs.org'
+          node-version: lts/*
+          registry-url: https://registry.npmjs.org
+      - run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
       - run: npm ci
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - uses: actions/setup-node@v4
         with:
-          registry-url: 'https://npm.pkg.github.com'
+          registry-url: https://npm.pkg.github.com
+      - run: echo "/registry.npmjs.org/:_authToken=${{ secrets.GITHUB_TOKEN }}" > .npmrc
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -48,7 +50,7 @@ jobs:
 #      - name: setup node
 #        uses: actions/setup-node@v4
 #        with:
-#          node-version: 20.x
+#          node-version: lts/*
 #
 #      - name: cache packages
 #        id: cache-npm
@@ -76,7 +78,7 @@ jobs:
 #      - name: gpr publish
 #        uses: actions/setup-node@v4
 #        with:
-#          node-version: 20.x
+#          node-version: lts/*
 #          registry-url: https://npm.pkg.github.com
 #
 #      - name: publish package
@@ -88,7 +90,7 @@ jobs:
 ##        uses: actions/setup-node@v4
 ##        with:
 ##          always-auth: true
-##          node-version: 20.x
+##          node-version: lts/*
 ##          registry-url: https://registry.npmjs.org
 ##
 ##      - name: publish package

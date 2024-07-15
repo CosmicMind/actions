@@ -62,7 +62,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: setup ghcr
-        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > .npmrc
+        run: rm .npmrc
 
       - name: gpr publish
         uses: actions/setup-node@v4

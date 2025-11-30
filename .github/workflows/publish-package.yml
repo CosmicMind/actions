@@ -59,7 +59,6 @@ jobs:
       - name: publish to npm
         uses: actions/setup-node@v4
         with:
-          always-auth: true
           node-version: lts/*
           registry-url: https://registry.npmjs.org
 

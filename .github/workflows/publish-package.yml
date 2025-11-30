@@ -18,10 +18,10 @@ jobs:
 
     steps:
       - name: checkout actions
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: lts/*
 
@@ -57,7 +57,7 @@ jobs:
         continue-on-error: false
 
       - name: publish to npm
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: lts/*
           registry-url: https://registry.npmjs.org
@@ -67,7 +67,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: publish to ghcr
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           registry-url: https://npm.pkg.github.com
 

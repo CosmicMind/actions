@@ -62,7 +62,7 @@ jobs:
           node-version: lts/*
           registry-url: https://registry.npmjs.org
 
-      - run: npm publish
+      - run: npm publish --tag beta
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -71,6 +71,6 @@ jobs:
         with:
           registry-url: https://npm.pkg.github.com
 
-      - run: npm publish
+      - run: npm publish --tag beta
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GHCR_TOKEN }}

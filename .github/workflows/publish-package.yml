@@ -3,8 +3,7 @@ name: Publish Library
 on:
   workflow_call:
     secrets:
-      NPM_TOKEN:
-        required: true
+      # No longer needed for npmjs, but we'll still use GHCR_TOKEN
       GHCR_TOKEN:
         required: true
 
@@ -13,7 +12,7 @@ jobs:
     name: publish library
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
+      id-token: write      # required for npm Trusted Publishing
       packages: write
       contents: read
 
@@ -21,13 +20,19 @@ jobs:
       - name: checkout actions
         uses: actions/checkout@v6
 
-      - name: setup node
+      - name: setup node (npmjs)
         uses: actions/setup-node@v6
         with:
           node-version: lts/*
+          registry-url: https://registry.npmjs.org
 
-      - name: setup .npmrc
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+      # IMPORTANT: no .npmrc with _authToken, no NODE_AUTH_TOKEN here
+
+      - name: ensure npm 11.5+
+        run: |
+          corepack enable
+          corepack prepare npm@latest --activate
+          npm --version
 
       - name: cache packages
         id: cache-npm
@@ -57,21 +62,17 @@ jobs:
           VITE_MODE: production
         continue-on-error: false
 
-      - name: publish to npm
-        uses: actions/setup-node@v6
-        with:
-          node-version: lts/*
-          registry-url: https://registry.npmjs.org
+      # --- NPMJS PUBLISH VIA TRUSTED PUBLISHING (NO TOKEN) ---
+      - name: publish to npm (trusted publishing)
+        run: npm publish --tag beta --access public
 
-      - run: npm publish --tag beta
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: publish to ghcr
+      # --- GHCR PUBLISH still uses token / GHCR auth ---
+      - name: setup node (ghcr)
         uses: actions/setup-node@v6
         with:
           registry-url: https://npm.pkg.github.com
 
-      - run: npm publish --tag beta
+      - name: publish to ghcr
+        run: npm publish --tag beta
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GHCR_TOKEN }}
